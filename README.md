@@ -1,8 +1,10 @@
-# Soil Mass Balance Data from Bergstrom et al. 2019.
+#  Fraser Experimental Forest Geochemical Mass Balance Data.
+
+## Overview
 
 A new SPC-based example dataset called ["bergstrom2019"](https://github.com/ncss-tech/aqp/issues/298) of soil and landscape constituent mass balance data for Fraser Experimental Forest. Dataset is to develop and test new methods for working with strain calculations and vizualizations. Data are an expanded datset that was used in [Bergstrom et al, 2019](https://www.sciencedirect.com/science/article/pii/S0016706117314738) to determine whether landscape position along catenas imparts a control on the distribution and sourcing of soil cations in the FEF and evaluate the contribution of atmospherically-derived Ca to the soil cation pool in FEF soils. A select dataset was previously published with the 2019 paper with Mendeley at [doi:10.17632/yj4jh8sv3y.1](https://doi.org/10.17632/yj4jh8sv3y.1).
 
-## Overview
+## Study Area
 
 The Fraser Experimental Forest (FEF), Grand County, Colorado, USA, is located in the central Rocky Mountains (Fig. 1). Research in the fields of hydrology and forest dynamics has taken place in the FEF since 1937. 
 
