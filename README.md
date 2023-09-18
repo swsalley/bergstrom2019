@@ -6,9 +6,9 @@ A new SPC-based example dataset called ["bergstrom2019"](https://github.com/ncss
 
 The FEF, Grand County, Colorado, USA, is located in the central Rocky Mountains (Fig. 1). Research in the fields of hydrology and forest dynamics has taken place in the FEF since 1937. 
 
-Soil and catchment map of the [Fraser Experimental Forest](https://www.fs.usda.gov/main/fraser/home) near Fraser, Colorado. Data were used in calculating soil strain, mass transfer function, and atmospheric deposition contributions to soil catenas in the Fraser Experimental Forest. Elemental and physical data are presented by horizon, along with horizon thicknesses and nomenclature. Data are organized by site. Each site (BL1, BL2, etc.) is a location along a soil catena. Catena name corresponds to the fist two letters of the site name (BL, BU, EL, EU, FL, FU, IL, and IU). Landscape position along catena corresponds to the number after the site name (1=summit, 2=shoulder, 3=backslope, 4=footslope). 
-
 ![Fraser Site Map](https://github.com/swsalley/bergstrom2019/blob/main/map.jpg?raw=true)
+
+Fig. 1,  Soil and catchment map of the [Fraser Experimental Forest](https://www.fs.usda.gov/main/fraser/home) near Fraser, Colorado. Data were used in calculating soil strain, mass transfer function, and atmospheric deposition contributions to soil catenas in the Fraser Experimental Forest. Elemental and physical data are presented by horizon, along with horizon thicknesses and nomenclature. Data are organized by site. Each site (BL1, BL2, etc.) is a location along a soil catena. Catena name corresponds to the fist two letters of the site name (BL, BU, EL, EU, FL, FU, IL, and IU). Landscape position along catena corresponds to the number after the site name (1=summit, 2=shoulder, 3=backslope, 4=footslope). 
 
 ## Geochemical (constituent) Mass Balance
 
