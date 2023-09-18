@@ -4,7 +4,7 @@ A new SPC-based example dataset called ["bergstrom2019"](https://github.com/ncss
 
 ## Overview
 
-The FEF, Grand County, Colorado, USA, is located in the central Rocky Mountains (Fig. 1). Research in the fields of hydrology and forest dynamics has taken place in the FEF since 1937. 
+The Fraser Experimental Forest (FEF), Grand County, Colorado, USA, is located in the central Rocky Mountains (Fig. 1). Research in the fields of hydrology and forest dynamics has taken place in the FEF since 1937. 
 
 ![Fraser Site Map](https://github.com/swsalley/bergstrom2019/blob/main/map.jpg?raw=true)
 
@@ -16,7 +16,7 @@ The geochemical (constituent) mass balance approach is used to estimate weatheri
 
 ## References
 
-- Bergstrom, R. M., Borch, T., Martin, P. H., Melzer, S., Rhoades, C. C., Salley, S. W., & Kelly, E. F. (2019). The generation and redistribution of soil cations in high elevation catenas in the Fraser Experimental Forest, Colorado, US. Geoderma, 333, 135-144. [Link](https://doi.org/10.1016/0016-7037(87)90070-6).
+- Bergstrom, R. M., Borch, T., Martin, P. H., Melzer, S., Rhoades, C. C., Salley, S. W., & Kelly, E. F. (2019). The generation and redistribution of soil cations in high elevation catenas in the Fraser Experimental Forest, Colorado, US. Geoderma, 333, 135-144. [Link](https://doi.org/10.1016/j.geoderma.2018.07.024).
 - Bergstrom, R. M., Borch, T., Martin, P. H., Melzer, S., Rhoades, C. C., Salley, S. W., & Kelly, E. F. (2019). Soil Data associated with manuscript "The generation and redistribution of soil cations in high elevation catenary sequences in the Fraser Experimental Forest, Colorado, U.S." In Geoderma. Mendeley. [Link](https://doi.org/10.17632/yj4jh8sv3y.1).
 - Brimhall, G. H., & Dietrich, W. E. (1987). Constitutive mass balance relations between chemical composition, volume, density, porosity, and strain in metasomatic hydrochemical systems: results on weathering and pedogenesis. Geochimica et Cosmochimica Acta, 51(3), 567-587. [Link]( https://doi.org/10.1016/0016-7037(87)90070-6).
 - Brimhall, G. H., Chadwick, O. A., Lewis, C. J., Compston, W., Williams, I. S., Danti, K. J., ... & Bratt, J. (1992). Deformational mass transport and invasive processes in soil evolution. Science, 255(5045), 695-702. [Link](https://doi.org/10.1126/science.255.5045.695).
