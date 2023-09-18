@@ -12,7 +12,7 @@ Soil and catchment map of the [Fraser Experimental Forest](https://www.fs.usda.g
 
 ## Geochemical (constituent) Mass Balance
 
-The geochemical (constituent) mass balance approach is used to estimate weathering by calculating volume changes through a soil profile and parent material composition. This approach uses Strain (ε), a measure of soil volume change incurred during pedogenesis, and was calculated as follows: Brimhall and Dietrich, 1987; Chadwick et al., 1990; and Brimhall et al., 1992.
+The geochemical (constituent) mass balance approach is used to estimate weathering by calculating volume changes through a soil profile and parent material composition. This approach uses Strain (ε), a measure of soil volume change incurred during pedogenesis. Strain index is unitless and calculated as the sum of the depth-weighted contibutions from each weathered soil horizon in its respective pedon. The mass transfer coefficient, τj,w, is used to evaluate element mobility within the soil, and the weathering mass flux, (mass j,flux), is used to evaluated mbility within the landscape. Titranium (Ti) was used to as the immobile reference. 
 
 ## References
 
