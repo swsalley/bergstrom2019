@@ -49,11 +49,7 @@ elemental, and physical data by horizon as well as site data. (Figure
 
 ![](https://github.com/swsalley/bergstrom2019/raw/main/map.jpg?raw=true)
 
-Figure 1. Fraser Experimental Forest soil locations. Soils were sampled
-in 2013 along mountain landscape positions (1=summit, 2=shoulder,
-3=backslope, and 4=footslope) of upper and lower watersheds (BL, BU, EL,
-EU, FL, FU, IL, and IU). Data includes morphologic, elemental, and
-physical data by horizon as well as site data.
+Figure 1. Fraser Experimental Forest soil locations.
 
 To gain insight into the generation and distribution of the soil cation
 pool, mass balance analysis was used on soil geochemical data to pedons
@@ -118,10 +114,11 @@ as an insoluble host mineral of immobile element (usually Titanium or
 Zirconium). Positive strains infer dilation and negative strains
 represent collapse. Strain (ε i,w) is defined as:
 
-$$ ε_{i.ws} =  \frac{ρ_{pm} C_{i,pm}}{ρ_{ws} C_{i,ws}} - 1 $$ where ρ is
-soil bulk density, Ci is the concentration of an (i) immobile reference
-element in the (ws) weathered soil horizon or the p the (pm) soil parent
-material.
+$$ ε_{i.ws} =  \frac{ρ_{pm} C_{i,pm}}{ρ_{ws} C_{i,ws}} - 1 $$
+
+where ρ is soil bulk density, Ci is the concentration of an (i) immobile
+reference element in the (ws) weathered soil horizon or the p the (pm)
+soil parent material.
 
 The following function can be used to compute volumetric strain for soil
 horizons based on immobile reference on soil data where the lowest
@@ -228,8 +225,7 @@ MassFlux <- function(x, Strain, MassTrans, bulkdensity, mobile) {
 }
 ```
 
-Now calculate the horizon Ca mass flux, using Strain() calculation with
-Ti as the immobile reference
+Now calculate the horizon Ca mass flux, using MassFlux():
 
 ``` r
 round(MassFlux(h, "Ti_strain", "tau_Ca_Ti", "BD", "Ca_ppm"),3)
@@ -257,5 +253,7 @@ Set up tests to determine immobile reference.
 
 Write function for enrichment factor (equation 7 from Vaughan etal
 2018):
+
 $$ \frac{C_{ws}}{C_{pm}} = \frac{ρ_{pm}}{ρ_{ws}} * \frac{1}{ε_{i.ws}+1} * (1+τ_j,ws) $$
+
 -end-
