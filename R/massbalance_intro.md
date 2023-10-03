@@ -1,7 +1,7 @@
 Soil Constituent Mass Balance
 ================
 S.W. Salley
-2023-10-02
+2023-10-03
 
 - <a href="#introduction" id="toc-introduction">Introduction</a>
 - <a href="#fraser-experimental-forest"
@@ -122,11 +122,10 @@ as an insoluble host mineral of immobile element (usually Titanium or
 Zirconium). Positive strains infer dilation and negative strains
 represent collapse. Strain (ε i,w) is defined as:
 
-$$ ε_{i.ws} =  \frac{ρ_{pm} C_{i,pm}}{ρ_{ws} C_{i,ws}} - 1 $$
-
-where ρ is soil bulk density, Ci is the concentration of an (i) immobile
-reference element in the (ws) weathered soil horizon or the p the (pm)
-soil parent material.
+$$ ε_{i.ws} =  \frac{ρ_{pm} C_{i,pm}}{ρ_{ws} C_{i,ws}} - 1 $$ where ρ is
+soil bulk density, Ci is the concentration of an (i) immobile reference
+element in the (ws) weathered soil horizon or the p the (pm) soil parent
+material.
 
 The following function can be used to compute volumetric strain for soil
 horizons based on immobile reference on soil data where the lowest
@@ -134,26 +133,33 @@ horizon for each pedon is considered the parent material of the soil:
 
 ``` r
 Strain <- function(x, bulkdensity, iref) { 
-  x$pm.i <- profileApply(x, FUN= function(x)
-    {tail(x[[bulkdensity]], 1) * tail(x[[iref]], 1) })
-  x.strain <- profileApply(x, FUN= function(x) 
-    { (x$pm.i) / (x[[bulkdensity]] * x[[iref]] ) -1  } )
-  print(c(x.strain, use.names =F))
+  x@horizons$strain <- profileApply(x, FUN= function(x) { 
+    ((tail(x[[bulkdensity]], 1) * tail(x[[iref]]/1000, 1)) / 
+       (x[[bulkdensity]] * x[[iref]]/1000)) -1  } )
+  x$strain 
 }
 ```
 
-Now calculate the elemental strain using Titanium (Ti) as the immobile
-reference. Note that the lowest depth for each pedon is has a zero
-volume change.
+Now calculate the elemental strain for Titanium (Ti) and Zirconium (Zr)
+as the immobile reference. Note that the lowest depth for each pedon is
+has a zero volume change.
 
 ``` r
 h$Ti_strain <- Strain(h, "BD","Ti_ppm")
+h$Zr_strain <- Strain(h, "BD","Zr_ppm")
 #
 groupedProfilePlot(trunc(h, 0, 100), groups = 'group', color = 'Ti_strain', id.style = 'top', width = 0.33, 
                    name.style = 'center-center', group.name.offset = -15)
 ```
 
 ![](massbalance_intro_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+``` r
+groupedProfilePlot(trunc(h, 0, 100), groups = 'group', color = 'Zr_strain', id.style = 'top', width = 0.33, 
+                   name.style = 'center-center', group.name.offset = -15)
+```
+
+![](massbalance_intro_files/figure-gfm/unnamed-chunk-5-2.png)<!-- -->
 
 ## Mass Transfer
 
@@ -175,12 +181,11 @@ horizons based on immobile reference on soil data and where the lowest
 horizon for each pedon is considered the parent material of the soil:
 
 ``` r
-MassTransfer <- function(x, Strain, bulkdensity, mobile) { 
-  x$pm.i <- profileApply(x, FUN = function(x) {
-    tail(x[[bulkdensity]], 1) * tail(x[[mobile]], 1) })
-  x.MassT <-profileApply(x, FUN = function(x) { 
-    (x[[bulkdensity]] * x[[mobile]] / x$pm.i) * (x[[Strain]] + 1) - 1})
-  print(c(x.MassT, use.names =F))
+MassTransfer <- function(x, bulkdensity, iref, mobile) { 
+  x@horizons$MassT <-profileApply(x, FUN = function(x) { 
+    ((x[[mobile]] * tail(x[[iref]], 1)) /
+    (x[[iref]] * tail(x[[mobile]], 1)) ) -1 })
+  x$MassT
 }
 ```
 
@@ -188,9 +193,9 @@ Now calculate the mass transfer of the mobile cation Calcium (ca) using
 Titanium (Ti) as the index, or immobile reference.
 
 ``` r
-h$tau_Ca.n <- MassTransfer(h, "Ti_strain", "BD", "Ca_ppm")
+h$tau_Ca_Ti <- MassTransfer(h, "Ti_strain", "BD", "Ca_ppm")
 #
-groupedProfilePlot(trunc(h, 0, 100), groups = 'group', color = 'tau_Ca.n', id.style = 'top', width = 0.33, 
+groupedProfilePlot(trunc(h, 0, 100), groups = 'group', color = 'tau_Ca_Ti', id.style = 'top', width = 0.33, 
                    name.style = 'center-center', group.name.offset = -15)
 ```
 
@@ -215,22 +220,25 @@ horizons based on immobile reference on soil data and where the lowest
 horizon for each pedon is considered the parent material of the soil:
 
 ``` r
-MassFlux <- function(x, Strain, MassFlux, bulkdensity, mobile) { 
-  x@horizons$hz.z <- x[[x@depthcols[2] ]] - x[[x@depthcols[1] ]] 
-  x@site$s.z <- profileApply(x, FUN = function(x) {tail(x[[x@depthcols[1]]], 1)}) 
-  x@horizons$hz.p <- profileApply(x, FUN = function(x) { x$hz.z / x$s.z })
-  x@horizons$flux <- x@horizons$hz.p * x@horizons[[MassFlux]]
-  x$flux
-}  
+MassFlux <- function(x, Strain, MassTrans, bulkdensity, mobile) { 
+  x@horizons$flux <- profileApply(x, FUN = function(x) { 
+    tail(x[[bulkdensity]], 1)  *
+    tail(x[[mobile]]/1000, 1) *
+    x[[MassTrans]] *
+    ((x[[x@depthcols[2] ]] - x[[x@depthcols[1] ]] )/100) *
+    (1/(x[[Strain]]+1)) }) 
+  x$flux 
+}
 ```
 
 Now calculate the horizon Ca mass flux, using Strain() calculation with
 Ti as the immobile reference
 
 ``` r
-h$Ca_mf <- MassFlux(h, "Ti_strain", "tau_Ca.n", "BD", "Ca_ppm")
+round(MassFlux(h, "Ti_strain", "tau_Ca_Ti", "BD", "Ca_ppm"),3)
+h$Ca_Massflux <- round(MassFlux(h, "Ti_strain", "tau_Ca_Ti", "BD", "Ca_ppm"),3)
 #
-groupedProfilePlot(trunc(h, 0, 100), groups = 'group', color = 'Ca_mf', id.style = 'top', width = 0.33, 
+groupedProfilePlot(trunc(h, 0, 100), groups = 'group', color = 'Ca_Massflux', id.style = 'top', width = 0.33, 
                    name.style = 'center-center', group.name.offset = -15)
 ```
 
@@ -238,23 +246,12 @@ groupedProfilePlot(trunc(h, 0, 100), groups = 'group', color = 'Ca_mf', id.style
 
 The following function can be used to compute mass flux for soil pedons
 based on immobile reference on soil data and where the lowest horizon
-for each pedon is considered the parent material of the soil:
+for each pedon is considered the parent material of the soil to
+calculate pedon mass flux.
 
 ``` r
-MassFluxP <- function(x, Strain, MassFlux, bulkdensity, mobile) { 
-  x@horizons$hz.z <- x[[x@depthcols[2] ]] - x[[x@depthcols[1] ]] 
-  x@site$s.z <- profileApply(x, FUN = function(x) {tail(x[[x@depthcols[1]]], 1)}) 
-  x@horizons$hz.p <- profileApply(x, FUN = function(x) { x$hz.z / x$s.z }) 
-  x@horizons$flux <- x@horizons$hz.p * x@horizons[[MassFlux]]
-  x$pflux <- profileApply(x, FUN = function(x) { sum(x$flux)})
-  x$pflux
-}  
-```
-
-now calculate pedon mass flux.
-
-``` r
-h@site$Ca_SiteMF <- MassFluxP(h, "Ti_strain", "tau_Ca.n", "BD", "Ca_ppm")
+profileApply(h, FUN = function(x) { sum(x$Ca_Massflux) -1 })
+h$pflux <- profileApply(h, FUN = function(x) { sum(x$Ca_Massflux) -1 })
 ```
 
 # Test Calculaions published values
@@ -271,35 +268,35 @@ summary(lm ( h$Ti_strain ~ h$epsilon_Ti ))$r.squared # r2 = 0.9992367 (success!)
 plot ( x = h$Ti_strain, y = h$epsilon_Ti ) 
 ```
 
-![](massbalance_intro_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](massbalance_intro_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 Transfer function
 
 ``` r
-summary(lm ( h$tau_ca ~ h$Ca_mf ))$r.squared # r2 = 0.6716875 (hmmm...)
+summary(lm ( h$tau_ca ~ h$tau_Ca_Ti ))$r.squared # r2 = 0.6716875 (hmmm...)
 ```
 
-    ## [1] 0.6716875
+    ## [1] 0.3881817
 
 ``` r
-plot ( x = h$tau_ca, y = h$Ca_mf ) 
+plot ( x = h$tau_ca, y = h$tau_Ca_Ti ) 
 ```
 
-![](massbalance_intro_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](massbalance_intro_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 Mass flux
 
 ``` r
-summary(lm ( h$tau_pedon_Ca  ~ h$Ca_SiteMF ))$r.squared # r2 = 0.2507 (hmmm...)
+summary(lm ( h$tau_pedon_Ca  ~ h$pflux ))$r.squared # r2 = 0.2507 (hmmm...)
 ```
 
-    ## [1] 0.2507999
+    ## [1] 0.0876191
 
 ``` r
-plot ( x = h$tau_pedon_Ca, y = h$Ca_SiteMF ) 
+plot ( x = h$tau_pedon_Ca, y = h$pflux ) 
 ```
 
-![](massbalance_intro_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](massbalance_intro_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 # Immobile Reference
 
