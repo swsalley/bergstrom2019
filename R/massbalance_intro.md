@@ -258,3 +258,4 @@ Set up tests to determine immobile reference.
 Write function for enrichment factor (equation 7 from Vaughan etal
 2018):
 $$ \frac{C_{ws}}{C_{pm}} = \frac{ρ_{pm}}{ρ_{ws}} * \frac{1}{ε_{i.ws}+1} * (1+τ_j,ws) $$
+-end-
