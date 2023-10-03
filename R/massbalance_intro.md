@@ -10,11 +10,7 @@ S.W. Salley
   - <a href="#strain" id="toc-strain">Strain</a>
   - <a href="#mass-transfer" id="toc-mass-transfer">Mass Transfer</a>
   - <a href="#mass-flux" id="toc-mass-flux">Mass Flux</a>
-- <a href="#test-calculaions-published-values"
-  id="toc-test-calculaions-published-values">Test Calculaions published
-  values</a>
-- <a href="#immobile-reference" id="toc-immobile-reference">Immobile
-  Reference</a>
+- <a href="#still-to-do" id="toc-still-to-do">Still to do</a>
 
 # Introduction
 
@@ -181,10 +177,11 @@ horizons based on immobile reference on soil data and where the lowest
 horizon for each pedon is considered the parent material of the soil:
 
 ``` r
-MassTransfer <- function(x, bulkdensity, iref, mobile) { 
+MassTransfer <- function(x, strain, bulkdensity, mobile) { 
   x@horizons$MassT <-profileApply(x, FUN = function(x) { 
-    ((x[[mobile]] * tail(x[[iref]], 1)) /
-    (x[[iref]] * tail(x[[mobile]], 1)) ) -1 })
+    ((x[[bulkdensity]] * x[[mobile]]/1000) /
+    (tail(x[[bulkdensity]], 1) * tail(x[[mobile]]/1000, 1)) *
+    (x[[strain]] + 1) ) -1  })
   x$MassT
 }
 ```
@@ -254,60 +251,10 @@ profileApply(h, FUN = function(x) { sum(x$Ca_Massflux) -1 })
 h$pflux <- profileApply(h, FUN = function(x) { sum(x$Ca_Massflux) -1 })
 ```
 
-# Test Calculaions published values
+# Still to do
 
-Strain
+Set up tests to determine immobile reference.
 
-``` r
-summary(lm ( h$Ti_strain ~ h$epsilon_Ti ))$r.squared # r2 = 0.9992367 (success!)
-```
-
-    ## [1] 0.9992367
-
-``` r
-plot ( x = h$Ti_strain, y = h$epsilon_Ti ) 
-```
-
-![](massbalance_intro_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
-
-Transfer function
-
-``` r
-summary(lm ( h$tau_ca ~ h$tau_Ca_Ti ))$r.squared # r2 = 0.6716875 (hmmm...)
-```
-
-    ## [1] 0.3881817
-
-``` r
-plot ( x = h$tau_ca, y = h$tau_Ca_Ti ) 
-```
-
-![](massbalance_intro_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
-
-Mass flux
-
-``` r
-summary(lm ( h$tau_pedon_Ca  ~ h$pflux ))$r.squared # r2 = 0.2507 (hmmm...)
-```
-
-    ## [1] 0.0876191
-
-``` r
-plot ( x = h$tau_pedon_Ca, y = h$pflux ) 
-```
-
-![](massbalance_intro_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
-
-# Immobile Reference
-
-Titanium (Ti) and Zirconium (Zr) are typically used as immobile
-reference elements due to their stability within their host mineral
-phases and resistance against dissolution. Ti often remains enriched in
-the fine fraction and Zr enriched in the coarse silt fraction of the
-particle size distribution.
-
-Todo: Develop test. Regress the relationship between their mass transfer
-function values against percent clay and sand (Ti to Zr, and to
-texture).
-
-Also: An enrichment factor is used to test the mobility of elements and
+Write function for enrichment factor (equation 7 from Vaughan etal
+2018):
+$$ \frac{C_{ws}}{C_{pm}} = \frac{ρ_{pm}}{ρ_{ws}} * \frac{1}{ε_{i.ws}+1} * (1+τ_j,ws) $$
