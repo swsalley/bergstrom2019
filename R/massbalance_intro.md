@@ -1,7 +1,7 @@
 Soil Constituent Mass Balance
 ================
 S.W. Salley
-2023-10-03
+2023-10-04
 
 - <a href="#introduction" id="toc-introduction">Introduction</a>
 - <a href="#fraser-experimental-forest"
@@ -11,6 +11,14 @@ S.W. Salley
   - <a href="#mass-transfer" id="toc-mass-transfer">Mass Transfer</a>
   - <a href="#mass-flux" id="toc-mass-flux">Mass Flux</a>
 - <a href="#still-to-do" id="toc-still-to-do">Still to do</a>
+  - <a href="#immobile-reference-test"
+    id="toc-immobile-reference-test">Immobile reference test</a>
+  - <a href="#rock-fragment-offset" id="toc-rock-fragment-offset">Rock
+    fragment offset</a>
+  - <a href="#enrichment-factor" id="toc-enrichment-factor">Enrichment
+    factor</a>
+  - <a href="#accumulation-rate" id="toc-accumulation-rate">Accumulation
+    rate</a>
 
 # Introduction
 
@@ -32,9 +40,10 @@ More information on the approach and calculations are from [Chadwick and
 others (1990)](https://doi.org/10.1016/0169-555X(90)90012-F), [Egli and
 Fitze
 (2000)](https://journals.lww.com/soilsci/Fulltext/2000/05000/Formulation_of_Pedologic_Mass_Balance_Based_on.8.aspx),
-[Vaughan and others (2018)](https://doi.org/10.2136/sssaj2018.02.0071)
-and [Bergstrom and others
-(2019)](https://doi.org/10.1016/j.geoderma.2018.07.024).
+[Heckman and Rasmussen
+(2011)](https://doi.org/10.1016/j.geoderma.2011.05.003), [Vaughan and
+others (2018)](https://doi.org/10.2136/sssaj2018.02.0071) and [Bergstrom
+and others (2019)](https://doi.org/10.1016/j.geoderma.2018.07.024).
 
 # Fraser Experimental Forest
 
@@ -114,7 +123,7 @@ as an insoluble host mineral of immobile element (usually Titanium or
 Zirconium). Positive strains infer dilation and negative strains
 represent collapse. Strain (ε i,w) is defined as:
 
-$$ ε_{i.ws} =  \frac{ρ_{pm} C_{i,pm}}{ρ_{ws} C_{i,ws}} - 1 $$
+$$ε_{i.ws} =  \frac{ρ_{pm} C_{i,pm}}{ρ_{ws} C_{i,ws}} - 1$$
 
 where ρ is soil bulk density, Ci is the concentration of an (i) immobile
 reference element in the (ws) weathered soil horizon or the p the (pm)
@@ -160,7 +169,7 @@ Mass Transfer is the horizon’s element mobility in the soil per mass
 fraction of the parent material. The open-system Mass Transfer
 Coefficient for the element j (τj,w) is defined as:
 
-$$ τ_{j.ws} =  \left(\frac{ρ_{ws} C_{j,ws}}{ρ_{pm} C_{j,pm}} (ε_{i.ws}+ 1)\right) - 1 $$
+$$τ_{j.ws} =  \left(\frac{ρ_{ws} C_{j,ws}}{ρ_{pm} C_{j,pm}} (ε_{i.ws}+ 1)\right) - 1$$
 
 where ρ is soil bulk density. Cj,w is the concentration of a mobile
 chemical element j of the the weathered soil horizon w, Cj,p is the
@@ -200,7 +209,7 @@ groupedProfilePlot(trunc(h, 0, 100), groups = 'group', color = 'tau_Ca_Ti', id.s
 Mass flux values estimate elemental gain or loss of a mobile element
 from the soil profile. The weathering mass flux co
 
-$$ mass_{j,flux} = ρ_{p} ∆Z_{w} \frac{1}{ε_{i.w}+ 1} C_{j,p}τ_{j,w} $$
+$$mass_{j,flux} = ρ_{p} ∆Z_{w} \frac{1}{ε_{i.w}+ 1} C_{j,p}τ_{j,w}$$
 
 where ρ is bulk density, w is the weathered soil horizon, p is parent
 material, and Cj,p is the concentration of element j, τj,w is the
@@ -214,13 +223,13 @@ horizons based on immobile reference on soil data and where the lowest
 horizon for each pedon is considered the parent material of the soil:
 
 ``` r
-MassFlux <- function(x, Strain, MassTrans, bulkdensity, mobile) { 
+MassFlux <- function(x, strain, MassTrans, bulkdensity, mobile) { 
   x@horizons$flux <- profileApply(x, FUN = function(x) { 
     tail(x[[bulkdensity]], 1)  *
-    tail(x[[mobile]]/1000, 1) *
-    x[[MassTrans]] *
     ((x[[x@depthcols[2] ]] - x[[x@depthcols[1] ]] )/100) *
-    (1/(x[[Strain]]+1)) }) 
+    (1/(x[[strain]]+1)) *
+    tail(x[[mobile]]/1000, 1) *
+    x[[MassTrans]] }) 
   x$flux 
 }
 ```
@@ -249,11 +258,60 @@ h$pflux <- profileApply(h, FUN = function(x) { sum(x$Ca_Massflux) -1 })
 
 # Still to do
 
-Set up tests to determine immobile reference.
+## Immobile reference test
 
-Write function for enrichment factor (equation 7 from Vaughan etal
-2018):
+The more ‘immobile’ element would show less of a relationship between
+strain and any soil property, or the movement of Ti or Zr is considered
+independent of the % clay or % sand. There is an assumption of mobility
+of sand and clay sized particles via translocation, so Whichever element
+is found to be less mobile is used as the benchmark to calculate strain.
 
-$$ \frac{C_{ws}}{C_{pm}} = \frac{ρ_{pm}}{ρ_{ws}} * \frac{1}{ε_{i.ws}+1} * (1+τ_j,ws) $$
+## Rock fragment offset
+
+Rock fragment offset (equation 3 from [Heckman and Ramussen,
+2011)](https://doi.org/10.1016/j.geoderma.2011.05.003)).
+
+$$mass_{j,flux} = ρ_{p} C_{j,p}τ_{j,w} \left[Z_{w}(1-η_w) \right]* \left(\frac{1}{ε_{i.w}+ 1} \right)$$
+
+``` r
+MassFlux <- function(x, Strain, MassTrans, bulkdensity, mobile, rockfrag) { 
+  x@horizons$flux <- profileApply(x, FUN = function(x) { 
+    tail(x[[bulkdensity]], 1)  *
+    tail(x[[mobile]]/1000, 1) *
+    x[[MassTrans]] *
+    (((x[[x@depthcols[2] ]] - x[[x@depthcols[1] ]] )/100) (1-x[[rockfrag]]))*
+    (1/(x[[Strain]]+1)) }) 
+  x$flux 
+}
+```
+
+To test this, rock fragment data needs to be added to the bergstrom2019
+data set.
+
+## Enrichment factor
+
+Enrichment factor (equation 7 from [Vaughan and others,
+2018)](https://doi.org/10.2136/sssaj2018.02.0071)):
+
+$$\frac{C_{ws}}{C_{pm}} = \frac{ρ_{pm}}{ρ_{ws}} * \frac{1}{ε_{i.ws}+1} * (1+τ_j,ws)$$
+
+``` r
+Enrichment <- function(x, Strain, MassTrans, bulkdensity, mobile) { 
+  x@horizons$flux <- profileApply(x, FUN = function(x) { 
+    (tail(x[[bulkdensity]], 1) / x[[bulkdensity]])  *
+    (1/(x[[Strain]]+1)) *
+    (1+  x[[MassTrans]] ) })
+  x$flux 
+}
+```
+
+## Accumulation rate
+
+Accumulation rate (equation 8 from [Vaughan and others,
+2018)](https://doi.org/10.2136/sssaj2018.02.0071)):
+
+$$accumuilation rate = \frac{ \overline{C_{j,ws}} }{t}$$ where
+$\overline{C_{j,ws}}$ is the weighted average of concentration of
+element j in g m-2 in weathered soil (ws) and t is time in years.
 
 -end-
