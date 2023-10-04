@@ -269,7 +269,7 @@ is found to be less mobile is used as the benchmark to calculate strain.
 ## Rock fragment offset
 
 Rock fragment offset (equation 3 from [Heckman and Ramussen,
-2011)](https://doi.org/10.1016/j.geoderma.2011.05.003)).
+2011](https://doi.org/10.1016/j.geoderma.2011.05.003)).
 
 $$mass_{j,flux} = ρ_{p} C_{j,p}τ_{j,w} \left[Z_{w}(1-η_w) \right]* \left(\frac{1}{ε_{i.w}+ 1} \right)$$
 
@@ -291,24 +291,24 @@ data set.
 ## Enrichment factor
 
 Enrichment factor (equation 7 from [Vaughan and others,
-2018)](https://doi.org/10.2136/sssaj2018.02.0071)):
+2018](https://doi.org/10.2136/sssaj2018.02.0071)):
 
 $$\frac{C_{ws}}{C_{pm}} = \frac{ρ_{pm}}{ρ_{ws}} * \frac{1}{ε_{i.ws}+1} * (1+τ_j,ws)$$
 
 ``` r
 Enrichment <- function(x, Strain, MassTrans, bulkdensity, mobile) { 
-  x@horizons$flux <- profileApply(x, FUN = function(x) { 
+  x@horizons$enrichment <- profileApply(x, FUN = function(x) { 
     (tail(x[[bulkdensity]], 1) / x[[bulkdensity]])  *
     (1/(x[[Strain]]+1)) *
     (1+  x[[MassTrans]] ) })
-  x$flux 
+  x$enrichment
 }
 ```
 
 ## Accumulation rate
 
 Accumulation rate (equation 8 from [Vaughan and others,
-2018)](https://doi.org/10.2136/sssaj2018.02.0071)):
+2018](https://doi.org/10.2136/sssaj2018.02.0071)):
 
 $$accumuilation rate = \frac{ \overline{C_{j,ws}} }{t}$$ where
 $\overline{C_{j,ws}}$ is the weighted average of concentration of
