@@ -159,42 +159,16 @@ plotSPC(h, color = 'pm.flag', width = 0.33, name.style = 'center-center')
 
 ``` r
 # top depth of shallowest C horizon
-depthOf(h, pattern = '^C', FUN = min, top = TRUE)
+head(depthOf(h, pattern = '^C', FUN = min, top = TRUE))
 ```
 
-    ##    pedon hzID top name pattern
-    ## 1    BL1    4  58    C      ^C
-    ## 2    BL2    8  75    C      ^C
-    ## 3    BL3   13 122    C      ^C
-    ## 4    BL4   16  24   C1      ^C
-    ## 5    BU1   20  10    C      ^C
-    ## 6    BU2   24  65    C      ^C
-    ## 7    BU3   28  58    C      ^C
-    ## 8    BU4   31  70   C1      ^C
-    ## 9    EL1   35  18    C      ^C
-    ## 10   EL2   38  40    C      ^C
-    ## 11   EL3   42  70    C      ^C
-    ## 12   EL4   46  85    C      ^C
-    ## 13   EU1   49  25    C      ^C
-    ## 14   EU2   54  51    C      ^C
-    ## 15   EU3   58  45   C1      ^C
-    ## 16   EU4   63  38    C      ^C
-    ## 17   FL1   66  15    C      ^C
-    ## 18   FL2   71  68    C      ^C
-    ## 19   FL3   76  74    C      ^C
-    ## 20   FL4   81 125    C      ^C
-    ## 21   FU1   85  90    C      ^C
-    ## 22   FU2   90  46   C1      ^C
-    ## 23   FU3   96  74    C      ^C
-    ## 24   FU4  101  94    C      ^C
-    ## 25   IL1  104  17    C      ^C
-    ## 26   IL2  107  40    C      ^C
-    ## 27   IL3  111  73   C1      ^C
-    ## 28   IL4  114  18    C      ^C
-    ## 29   IU1  118  37   C1      ^C
-    ## 30   IU2  122  32    C      ^C
-    ## 31   IU3  126  68    C      ^C
-    ## 32   IU4  130  88    C      ^C
+    ##   pedon hzID top name pattern
+    ## 1   BL1    4  58    C      ^C
+    ## 2   BL2    8  75    C      ^C
+    ## 3   BL3   13 122    C      ^C
+    ## 4   BL4   16  24   C1      ^C
+    ## 5   BU1   20  10    C      ^C
+    ## 6   BU2   24  65    C      ^C
 
 Note: Please contact authors if you have other approaches and would like
 to contribute code or test data to expand how application of parent
@@ -303,19 +277,21 @@ has a zero volume change.
 ``` r
 h$Ti_strain <- Strain(h, "BD","Ti_ppm")
 h$Zr_strain <- Strain(h, "BD","Zr_ppm")
-#
+```
+
+``` r
 groupedProfilePlot(trunc(h, 0, 100), groups = 'group', color = 'Ti_strain', id.style = 'top', width = 0.33, 
                    name.style = 'center-center', group.name.offset = -15)
 ```
 
-![](massbalance_intro_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](massbalance_intro_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 ``` r
 groupedProfilePlot(trunc(h, 0, 100), groups = 'group', color = 'Zr_strain', id.style = 'top', width = 0.33, 
                    name.style = 'center-center', group.name.offset = -15)
 ```
 
-![](massbalance_intro_files/figure-gfm/unnamed-chunk-8-2.png)<!-- -->
+![](massbalance_intro_files/figure-gfm/unnamed-chunk-9-2.png)<!-- -->
 
 ## Mass Transfer
 
@@ -359,7 +335,7 @@ groupedProfilePlot(trunc(h, 0, 100), groups = 'group', color = 'tau_Ca_Ti', id.s
                    name.style = 'center-center', group.name.offset = -15)
 ```
 
-![](massbalance_intro_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](massbalance_intro_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 ## Mass Flux
 
@@ -401,7 +377,7 @@ groupedProfilePlot(trunc(h, 0, 100), groups = 'group', color = 'Ca_Massflux', id
                    name.style = 'center-center', group.name.offset = -15)
 ```
 
-![](massbalance_intro_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](massbalance_intro_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 The following function can be used to compute mass flux for soil pedons
 based on immobile reference on soil data and where the lowest horizon
