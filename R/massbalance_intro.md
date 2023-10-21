@@ -199,9 +199,7 @@ reference element in the (ws) weathered soil horizon or the p the (pm)
 soil parent material.
 
 The following function can be used to compute volumetric strain for soil
-horizons based on immobile reference on soil data. Default is where the
-lowest horizon for each pedon is considered the parent material of the
-soil,
+horizons based on immobile reference on soil data. 
 
 ``` r
 Strain <- function(x, bulkdensity, iref, pm.flag = TRUE) { 
